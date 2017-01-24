@@ -42,8 +42,8 @@ public class Jeton {
         paint.setColor(Color.WHITE);
         paint.setStrokeWidth(8);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(rect.left - 8, rect.top - 8, rect.right + 8, rect.bottom + 8, paint);
-            if (type == 'A') {
+
+        if (type == 'A') {
                 bmp = grille.getA();
             }
             if (type == 'B') {
