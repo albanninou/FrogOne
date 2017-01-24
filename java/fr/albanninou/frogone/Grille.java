@@ -7,16 +7,12 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
 
-import static fr.albanninou.frogone.MainActivity.lvl;
-
 public class Grille {
-    private Bitmap a, b, c, d, e, winbmp, rotate;
+    private Bitmap a, b, c, d, e, winbmp, rotate, font, fontchange = null;
     private Bitmap lastBmp;
     private int lastDegre;
     private char lasttype;
@@ -48,6 +44,7 @@ public class Grille {
         c = BitmapFactory.decodeResource(res, R.drawable.jetonb);
         d = BitmapFactory.decodeResource(res, R.drawable.jetonn);
         e = BitmapFactory.decodeResource(res, R.drawable.jetono);
+        font = BitmapFactory.decodeResource(res, R.drawable.font);
         winbmp = BitmapFactory.decodeResource(res, R.drawable.win);
         this.activity = activity;
         this.lvl = lvl;
@@ -83,10 +80,11 @@ public class Grille {
     }
 
     public void drawWin(Canvas canvas) {
+
         wintaillel = wintaillel + 30;
         wintaillec = wintaillec + 15;
         if (wintaillec < canvas.getWidth() && wintaillel < canvas.getHeight()) {
-            canvas.drawColor(Color.WHITE);
+            drawGrille(canvas);
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(winbmp, wintaillec, wintaillel, true);
             canvas.drawBitmap(scaledBitmap, canvas.getWidth() / 2 - wintaillec / 2, canvas.getHeight() / 2 - wintaillel / 2, null);
         } else {
@@ -136,29 +134,8 @@ public class Grille {
     }
 
     public void drawGrille(Canvas canvas) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        canvas.drawColor(Color.WHITE);
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(8);
-        paint.setStyle(Paint.Style.FILL);
-
-        float taille = canvas.getWidth();
-        if (lc[0] < lc[1]) {
-            tCase = canvas.getWidth() / (lc[1] + 1);
-            tLigne = tCase / (lc[1] + 1);
-        } else {
-            tCase = canvas.getWidth() / (lc[0] + 1);
-            tLigne = tCase / (lc[0] + 1);
-        }
-        for (int l = 0; l < lc[0] + 1; l++) {
-            canvas.drawRect(0, tCase * l + tLigne * l, tLigne * (lc[1] + 1) + tCase * lc[1], tCase * l + tLigne * (l + 1), paint);
-        }
-        for (int c = 0; c < lc[1] + 1; c++) {
-            canvas.drawRect(tLigne * c + tCase * c, 0, tLigne * (c + 1) + tCase * c, tLigne * (lc[0] + 1) + tCase * lc[0], paint);
-        }
-        paint.setColor(Color.WHITE);
-        canvas.drawRect((float) 0, tLigne * (lc[0] + 1) + tCase * lc[0], (float) canvas.getWidth(), (float) canvas.getHeight(), paint);
-        canvas.drawRect(tLigne * (lc[1] + 1) + tCase * lc[1], (float) 0, (float) canvas.getWidth(), (float) canvas.getHeight(), paint);
+        fontchange = Bitmap.createScaledBitmap(font, canvas.getWidth(), canvas.getHeight(), false);
+        canvas.drawBitmap(fontchange, 0, 0, null);
     }
 
     boolean getWin() {

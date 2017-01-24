@@ -44,7 +44,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         layout.removeView(win);
         layout.removeView(textlvl);
         layout.addView(Lvl);
-        layout.addView(textlvl);
+
 
         final Button b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +58,11 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
                 Lvl.undow();
             }
         });
-
+        layout.removeView(b1);
+        layout.removeView(b2);
+        layout.addView(b1);
+        layout.addView(b2);
+        layout.addView(textlvl);
 
     }
 

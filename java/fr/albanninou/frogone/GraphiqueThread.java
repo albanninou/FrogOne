@@ -55,7 +55,6 @@ public class GraphiqueThread extends Thread {
                                 grille.drawGrille(canvas);
                                 grille.drawJeton(canvas);
                             } else {
-
                                 grille.drawWin(canvas);
                             }
                         }
