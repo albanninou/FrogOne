@@ -91,19 +91,21 @@ public class Grille {
             canvas.drawBitmap(scaledBitmap, canvas.getWidth() / 2 - wintaillec / 2, canvas.getHeight() / 2 - wintaillel / 2, null);
         } else {
             activity.finish();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            SharedPreferences.Editor editor = preferences.edit();
             Intent intent = new Intent(activity, LvlActivity.class);
-            if (this.lvl != ConfigLvl.lvlmax) {
-                intent.putExtra("lvl", this.lvl + 1);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                SharedPreferences.Editor editor = preferences.edit();
-                if (preferences.getInt("lvl", 1) == this.lvl) {
-                    editor.putInt("lvl", this.lvl + 1);
-                    editor.apply();
+            int lvlhaut = preferences.getInt("lvl",0);
+            if(lvlhaut <= this.lvl){
+                if(this.lvl < ConfigLvl.lvlmax){
+                    intent.putExtra("lvl", this.lvl + 1);
+                }else{
+                    intent.putExtra("lvl", this.lvl);
                 }
-            } else {
-                intent.putExtra("lvl", this.lvl);
+                editor.putInt("lvl", this.lvl + 1);
+                editor.apply();
+            }else{
+                intent.putExtra("lvl", this.lvl + 1);
             }
-
             activity.startActivity(intent);
             finish = true;
 
