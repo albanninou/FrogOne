@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         lvl = preferences.getInt("lvl", 0);
         menu.removeAllViews();
         for (int i = 0; i <= ConfigLvl.lvlmax; i++) {
-            menu.addView(new BouttonLvl(context, lvl, i, activity));
+            menu.addView(new BouttonLvl(context, lvl, i, activity)); //coucou
         }
     }
 
