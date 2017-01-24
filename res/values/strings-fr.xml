@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="step1">Bienvenu sur FrogOne, le but du jeu est de détruire toutes les grenouilles de la grille. Pour ce faire vous devez aligner 3 grenouilles ou plus. Cliquez pour continuer.</string>
+    <string name="step2">Cliquez sur une grenouille pour la selectionner puis cliquez de nouveau la où vous voulez la jouer, vous pouvez la dépacer de plusieurs cases. Mais attention il y a des règles. En effet vous ne pouvez la deplacer que si cela forme un alignement d au moins 3 grenouilles et vous ne pouvez pas sauter par dessus une autre grenouille.</string>
+    <string name="step3">Un rond noir apparaît pour vous indiquer où vous pouvez jouer le jeton selectionné, si il n y a pas de cercle noir veuillez selectionner un autre jeton.</string>
+    <string name="step4">Bien joué, vous avez fini le niveau. Cliquez pour quitter</string>
+</resources>
