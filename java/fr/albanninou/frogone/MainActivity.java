@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
 
 import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     static LinearLayout menu;
@@ -47,12 +49,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Update() {
+        try {
+            URL url = new URL(MY_URL);
+            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            c.setRequestMethod("GET");
+            c.setDoOutput(true);
+            c.connect();
+
+            String PATH = Environment.getExternalStorageDirectory()
+                    + "/download/";
+            Log.d("Abhan", "PATH: " + PATH);
+            File file = new File(PATH);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            File outputFile = new File(file, fileName);
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            InputStream is = c.getInputStream();
+            byte[] buffer = new byte[1024];
+            int len1 = 0;
+            while ((len1 = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, len1);
+            }
+            fos.flush();
+            fos.close();
+            is.close();
+        } catch (IOException e) {
+            Log.e("Abhan", "Error: " + e);
+        }
         //get destination to update file and set Uri
         //TODO: First I wanted to store my update .apk file on internal storage for my app but apparently android does not allow you to open and install
         //aplication with existing package from there. So for me, alternative solution is Download directory in external storage. If there is better
         //solution, please inform us in comment
         String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
-        String fileName = "FrogOne.apk";
+        String fileName = "app-debug.apk";
         destination += fileName;
         final Uri uri = Uri.parse("file://" + destination);
 
@@ -63,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             file.delete();
 
         //get url of app on server
-        String url = "http://frogone.esy.es/FrogOne.apk";
+        String url = "http://frogone.esy.es/app-debug.apk";
 
         //set downloadmanager
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
@@ -84,11 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 install.setDataAndType(uri,
                         manager.getMimeTypeForDownloadedFile(downloadId));
                 startActivity(install);
-                Intent promptInstall = new Intent(Intent.ACTION_VIEW)
-                        .setDataAndType(uri,
-                                "application/vnd.android.package-archive");
-                startActivity(promptInstall);
-                unregisterReceiver(this);
                 finish();
             }
         };
