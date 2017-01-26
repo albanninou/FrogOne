@@ -46,4 +46,13 @@
         android:layout_toEndOf="@+id/mid"
         android:text="lvl 0" />
 
+    <TextView
+        android:id="@+id/coup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/textlvl"
+        android:layout_marginEnd="13dp"
+        android:text="TextView" />
+
 </RelativeLayout>

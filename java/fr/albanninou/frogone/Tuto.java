@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 /**
  * Created by Jeune on 23/01/2017.
@@ -37,7 +36,6 @@ public class Tuto extends SurfaceView implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Toast.makeText(activity, "surface creer" , Toast.LENGTH_SHORT).show();
         thread = new GraphiqueThread(grille, holder);
         thread.start();
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="step1">Welcome in FrogOne, you have to kill all the frogs on the grid. To do this, you have to align 3 frogs or more. Click to continue.</string>
+    <string name="step2">Click on a frog to select her, and click where you want to put her, you can move her from multiple cell. But there is rules. You can move her only if it form at least 3 frogs, and you cant jump over other frogs.</string>
+    <string name="step3">A Black circle appear to show you where you can move the selected frog, select an other frog if none appear.</string>
+    <string name="step4">Well played, you finished the level, click to continue</string>
+</resources>

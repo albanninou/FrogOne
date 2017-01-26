@@ -7,7 +7,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
 
@@ -27,6 +29,7 @@ public class Grille {
     private Activity activity;
     private boolean stop = false, finish = false, win = false;
     private int lvl;
+    private Image image;
 
     public Grille(int lvl, Activity activity) {
         grille = new char[100][100][100];
@@ -79,6 +82,9 @@ public class Grille {
         return finish;
     }
 
+    public Image getImage() {
+        return image;
+    }
     public void drawWin(Canvas canvas) {
 
         wintaillel = wintaillel + 30;
@@ -92,16 +98,16 @@ public class Grille {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
             SharedPreferences.Editor editor = preferences.edit();
             Intent intent = new Intent(activity, LvlActivity.class);
-            int lvlhaut = preferences.getInt("lvl",0);
-            if(lvlhaut <= this.lvl){
-                if(this.lvl < ConfigLvl.lvlmax){
+            int lvlhaut = preferences.getInt("lvl", 0);
+            if (lvlhaut <= this.lvl) {
+                if (this.lvl < ConfigLvl.lvlmax) {
                     intent.putExtra("lvl", this.lvl + 1);
-                }else{
+                } else {
                     intent.putExtra("lvl", this.lvl);
                 }
                 editor.putInt("lvl", this.lvl + 1);
                 editor.apply();
-            }else{
+            } else {
                 intent.putExtra("lvl", this.lvl + 1);
             }
             activity.startActivity(intent);
@@ -133,9 +139,28 @@ public class Grille {
         }
     }
 
+    public int getCoup() {
+        return coup;
+    }
+
     public void drawGrille(Canvas canvas) {
+        if (image == null) {
+            image = new Image(this);
+        }
         fontchange = Bitmap.createScaledBitmap(font, canvas.getWidth(), canvas.getHeight(), false);
         canvas.drawBitmap(fontchange, 0, 0, null);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(8);
+        paint.setStyle(Paint.Style.FILL);
+        if (!win) {
+            for (int l = 0; l < lc[0] + 1; l++) {
+                canvas.drawRect(0, tCase * l + tLigne * l, tLigne * (lc[1] + 1) + tCase * lc[1], tCase * l + tLigne * (l + 1), paint);
+            }
+            for (int c = 0; c < lc[1] + 1; c++) {
+                canvas.drawRect(tLigne * c + tCase * c, 0, tLigne * (c + 1) + tCase * c, tLigne * (lc[0] + 1) + tCase * lc[0], paint);
+            }
+        }
     }
 
     boolean getWin() {
@@ -164,7 +189,7 @@ public class Grille {
                 select[0] = -1;
             }
         } else {
-            if (select[0] != -1) {
+            if (select[0] != -1 && (select[0] != y || select[1] != x)) {
                 int[] casser = {y, x};
                 GameOneBreak(casser);
             }
@@ -177,16 +202,20 @@ public class Grille {
             return rotate;
         } else {
             if (src != null) {
-                if (Math.round(src.getWidth() - image * 2) > 0 && Math.round(src.getHeight() - image * 2) > 0) {
-                    lastBmp = src;
-                    lastDegre = degree;
-                    lasttype = type;
-                    Matrix matrix = new Matrix();
-                    matrix.postRotate(degree);
+                lastBmp = src;
+                lastDegre = degree;
+                lasttype = type;
+                Matrix matrix = new Matrix();
+                matrix.postRotate(degree);
+                if (src.getWidth() > 0 && src.getHeight() > 0) {
                     Bitmap bmp = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
-                    bmp = Bitmap.createScaledBitmap(bmp, Math.round(rect.width()) - image * 2, Math.round(rect.height() - image * 2), false);
-                    rotate = bmp;
-                    return bmp;
+                    if (Math.round(rect.width() - image * 2) > 0 && Math.round(rect.height() - image * 2) > 0) {
+                        bmp = Bitmap.createScaledBitmap(bmp, Math.round(rect.width() - image * 2), Math.round(rect.height() - image * 2), false);
+                        rotate = bmp;
+                        return bmp;
+                    } else {
+                        return null;
+                    }
                 } else {
                     return null;
                 }
@@ -319,12 +348,15 @@ public class Grille {
 
         coup++;
         if (grille[coup][cassezL][cassezC] != 'V') {//on verifie que la casse est bien vide
+            coup--;
             return false;
         }
         if (!(selectC == cassezC || selectL == cassezL || Math.abs(selectL - cassezL) == Math.abs(selectC - cassezC))) {//on verifie si il joue bien en ligne ou en diagonale
+            coup--;
             return false;
         }
         if (!GameOneTrajectoire(selectL, selectC, cassezL, cassezC)) {
+            coup--;
             return false;
         }
         grille[coup][cassezL][cassezC] = grille[coup][selectL][selectC];
@@ -455,6 +487,11 @@ public class Grille {
             jeton[cassezL][cassezC] = jeton[selectL][selectC];
             jeton[selectL][selectC] = temp;
             jeton[cassezL][cassezC].broke();
+            if (LvlActivity.coups != null) {
+                LvlActivity.coups.setText("Coup(s) : " + coup);
+                LvlActivity.layout.removeView(LvlActivity.coups);
+                LvlActivity.layout.addView(LvlActivity.coups);
+            }
             return true;
         } else {
             grille[coup][selectL][selectC] = grille[coup][cassezL][cassezC];

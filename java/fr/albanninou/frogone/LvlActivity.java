@@ -24,6 +24,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
     public static Activity act;
     public static RelativeLayout layout;
     public static TextView win;
+    public static TextView coups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +42,21 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         res = getResources();
         Lvl = new Lvl(this, this,lvl);
         win = (TextView) findViewById(R.id.win);
+        coups = (TextView) findViewById(R.id.coup);
+        coups.setText("Coup(s) : 0");
         layout.removeView(win);
+        layout.removeView(coups);
         layout.removeView(textlvl);
         layout.addView(Lvl);
+        layout.addView(coups);
 
 
         final Button b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                coups.setText("Coup(s) : 0");
+                layout.removeView(coups);
+                layout.addView(coups);
                 Lvl.restart();
             }
         });
@@ -56,6 +64,9 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         b2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Lvl.undow();
+                coups.setText("Coup(s) : " + Lvl.getGrille().getCoup());
+                layout.removeView(coups);
+                layout.addView(coups);
             }
         });
         layout.removeView(b1);
@@ -94,8 +105,8 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
 
                 float x = event.getX();
                 float y = event.getY();
-                int X = (int) ((x - 40) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[1]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[1] + 1))) / ((float) Lvl.getGrille().getLc()[1])));
-                int Y = (int) ((y - 80) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[0]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[0] + 1))) / ((float) Lvl.getGrille().getLc()[0])));
+                int X = (int) ((x) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[1]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[1] + 1))) / ((float) Lvl.getGrille().getLc()[1])));
+                int Y = (int) ((y - 40) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[0]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[0] + 1))) / ((float) Lvl.getGrille().getLc()[0])));
                 if (X < 0) {
                     X = 0;
                 }

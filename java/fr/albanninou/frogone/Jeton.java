@@ -24,52 +24,47 @@ public class Jeton {
     private int rotation = 0;
     private Grille grille;
 
-    Jeton(char type, int[] place,Grille grille) {
+    Jeton(char type, int[] place, Grille grille) {
         this.type = type;
         this.type2 = type;
         this.place = place;
         this.select = false;
         this.grille = grille;
     }
-    public char getType(){
+
+    public char getType() {
         return type;
     }
-    public boolean getBroke(){
+
+    public boolean getBroke() {
         return broke;
     }
+
     Jeton drawJeton(Canvas canvas, RectF rect) {
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.WHITE);
         paint.setStrokeWidth(8);
         paint.setStyle(Paint.Style.FILL);
-
         if (type == 'A') {
-                bmp = grille.getA();
-            }
-            if (type == 'B') {
-                bmp = grille.getB();
-            }
-            if (type == 'C') {
-                bmp = grille.getC();
-            }
-            if (type == 'D') {
-                bmp = grille.getD();
-            }
-            if (type == 'E') {
-                bmp = grille.getE();
-            }
+            bmp = grille.getA();
+        }
+        if (type == 'B') {
+            bmp = grille.getB();
+        }
+        if (type == 'C') {
+            bmp = grille.getC();
+        }
+        if (type == 'D') {
+            bmp = grille.getD();
+        }
+        if (type == 'E') {
+            bmp = grille.getE();
+        }
         if (broke) {
             image = image + 2;
             if (image < rect.height() / 2) {
-                if (bmp != null) {
-                    rotation = rotation + 4;
-                    Bitmap bm = grille.rotateImage(bmp, rotation, image, rect, type);
-                    if (bm != null) {
-                        canvas.drawBitmap(bm, rect.left + image, rect.top + image, null);
-                    } else {
-                        broke = false;
-                        image = 0;
-                    }
+                if (grille.getImage().getRotate(type2, image) != null) {
+                    canvas.drawBitmap(grille.getImage().getRotate(type2, image), rect.left + image, rect.top + image, null);
                 }
             } else {
                 broke = false;
@@ -82,7 +77,7 @@ public class Jeton {
                         if (rect.height() / 2 - image < rect.height() / 4) {
                             sens = -1;
                         }
-                        if (rect.height() / 2 - image > rect.height() / 2) {
+                        if (rect.height() / 2 - image >= rect.height() / 2) {
                             sens = 1;
                         }
                         image = image + sens;
@@ -93,11 +88,18 @@ public class Jeton {
                             image = 0;
                         }
                     }
+                    if (image < 0) {
+                        image = 0;
+                    }
+                    if (grille.getImage().getRetrecir(type, image) != null && !grille.getImage().getRetrecir(type, image).isRecycled()) {
+                        canvas.drawBitmap(grille.getImage().getRetrecir(type, image), rect.left + image, rect.top + image, null);
+                    }
 
-                    canvas.drawBitmap(Bitmap.createScaledBitmap(bmp, Math.round(rect.width()) - image * 2, Math.round(rect.height() - image * 2), false), rect.left + image, rect.top + image, null);
+
                 } else {
-
-                    canvas.drawBitmap(Bitmap.createScaledBitmap(bmp, Math.round(rect.width()) - image, Math.round(rect.height() - image), false), rect.left + image / 2, rect.top + image / 2, null);
+                    if (grille.getImage().getRetrecir(type, image) != null && !grille.getImage().getRetrecir(type, image).isRecycled()) {
+                        canvas.drawBitmap(grille.getImage().getRetrecir(type, image), rect.left + image / 2, rect.top + image / 2, null);
+                    }
                 }
             } else {
                 if (canbreak) {
@@ -111,9 +113,7 @@ public class Jeton {
                     paint.setStyle(Paint.Style.STROKE);
                     paint.setColor(Color.BLACK);
                     canvas.drawCircle(rect.centerX(), rect.centerY(), rect.height() / 2 - image, paint);
-                    paint.setStyle(Paint.Style.FILL);
-                    paint.setColor(Color.WHITE);
-                    canvas.drawCircle(rect.centerX(), rect.centerY(), rect.height() / 2 - image, paint);
+
                 } else {
                     image = 0;
                 }
