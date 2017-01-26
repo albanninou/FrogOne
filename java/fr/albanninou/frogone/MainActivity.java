@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void Update() {
         try {
+            android - install - apk - programmatically
+            java systeme de mise a jour apk
             URL url = new URL(MY_URL);
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
             c.setRequestMethod("GET");
