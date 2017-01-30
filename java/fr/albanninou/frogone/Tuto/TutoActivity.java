@@ -1,4 +1,4 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Tuto;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -9,7 +9,9 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import fr.albanninou.frogone.Main.MainActivity;
+import fr.albanninou.frogone.R;
 
 public class TutoActivity extends Activity {
     public static Resources res;
@@ -24,7 +26,7 @@ public class TutoActivity extends Activity {
         setContentView(R.layout.activity_tuto);
         layout = (RelativeLayout) findViewById(R.id.activity_tuto);
         res = getResources();
-        tuto = new Tuto(this,this);
+        tuto = new Tuto(this, this);
         commentaire = (TextView) findViewById(R.id.commentaire);
         commentaire.setText(R.string.step1);
         layout.removeView(commentaire);

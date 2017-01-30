@@ -12,7 +12,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".Main.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,9 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LvlActivity"
+        <activity
+            android:name=".Lvl.LvlActivity"
             android:screenOrientation="portrait"> </activity>
-        <activity android:name=".TutoActivity"
+        <activity
+            android:name=".Tuto.TutoActivity"
             android:screenOrientation="portrait"> </activity>
     </application>
 

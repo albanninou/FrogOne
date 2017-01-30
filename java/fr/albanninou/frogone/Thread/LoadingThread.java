@@ -1,10 +1,11 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Thread;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.SurfaceHolder;
+
+import fr.albanninou.frogone.Grille;
+import fr.albanninou.frogone.Main.MainActivity;
 
 /**
  * Created by Jeune on 29/01/2017.
@@ -47,13 +48,6 @@ public class LoadingThread extends Thread {
                             }
                         }
                         canvas.drawBitmap(loading, 0, 0, null);
-                        Paint paint = new Paint();
-                        paint.setColor(Color.BLACK);
-                        paint.setTextSize(40);
-                        paint.setTextAlign(Paint.Align.CENTER);
-                        canvas.drawText("Loading", canvas.getWidth() / 2, canvas.getHeight() / 4 * 3, paint);
-
-
                     }
                 }
             } finally {

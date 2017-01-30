@@ -1,4 +1,4 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Lvl;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,10 +15,13 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import fr.albanninou.frogone.Main.MainActivity;
+import fr.albanninou.frogone.R;
+
 public class LvlActivity extends Activity implements View.OnTouchListener {
 
     public static int lvl;
-    public static Lvl Lvl;
+    public static fr.albanninou.frogone.Lvl.Lvl Lvl;
     public static int lvlmax = 17;
     public static Resources res;
     public static Activity act;
@@ -40,7 +43,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         textlvl.setText("Lvl " + lvl);
         layout = (RelativeLayout) findViewById(R.id.activity_lvl);
         res = getResources();
-        Lvl = new Lvl(this, this,lvl);
+        Lvl = new Lvl(this, this, lvl);
         win = (TextView) findViewById(R.id.win);
         coups = (TextView) findViewById(R.id.coup);
         coups.setText("Coup(s) : 0");
@@ -119,7 +122,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
 
                 Lvl.getGrille().setSelect(Y, X);
 
-                if (Lvl.getGrille().getWin() &&  Lvl.getGrille().getWinBoolean() != true) {
+                if (Lvl.getGrille().getWin() && Lvl.getGrille().getWinBoolean() != true) {
                     Lvl.getGrille().setWinBoolean(true);
                     layout.addView(win);
                 }

@@ -1,10 +1,13 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Main;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+
+import fr.albanninou.frogone.Lvl.LvlActivity;
+import fr.albanninou.frogone.Tuto.TutoActivity;
 
 public class BouttonLvl extends Button {
     public BouttonLvl(Context context, int lvlatteint, final int lvl, final Activity activity) {

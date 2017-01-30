@@ -1,7 +1,9 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Thread;
 
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
+
+import fr.albanninou.frogone.Grille;
 
 /**
  * Created by Jeune on 23/01/2017.

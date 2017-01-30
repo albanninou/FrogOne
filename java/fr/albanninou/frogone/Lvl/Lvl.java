@@ -1,9 +1,12 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Lvl;
 
 import android.app.Activity;
 import android.content.Context;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import fr.albanninou.frogone.Grille;
+import fr.albanninou.frogone.Thread.GraphiqueThread;
 
 /**
  * Created by Jeune on 23/01/2017.
@@ -22,7 +25,8 @@ public class Lvl extends SurfaceView implements SurfaceHolder.Callback {
         this.grille = new Grille(lvl, activity, getHolder());
         this.activity = activity;
     }
-    public Grille getGrille(){
+
+    public Grille getGrille() {
         return this.grille;
     }
 

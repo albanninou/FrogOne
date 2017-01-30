@@ -7,11 +7,14 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;
+
+import fr.albanninou.frogone.Lvl.LvlActivity;
+import fr.albanninou.frogone.Main.ConfigLvl;
+import fr.albanninou.frogone.Thread.LoadingThread;
 
 public class Grille {
     private Bitmap a, b, c, d, e, winbmp, loadingbmp, rotate, font, fontchange = null;
@@ -97,12 +100,12 @@ public class Grille {
         wintaillec = wintaillec + 15;
         if (wintaillec < canvas.getWidth()) {
             drawGrille(canvas);
-            //Bitmap scaledBitmap = Bitmap.createScaledBitmap(winbmp, wintaillec, wintaillel, true);
             if (image.getWin(wintaillec) != null) {
                 canvas.drawBitmap(image.getWin(wintaillec), canvas.getWidth() / 2 - wintaillec / 2, canvas.getHeight() / 2 - wintaillel / 2, null);
             }
         } else {
             activity.finish();
+            image.destroy();
             image = null;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
             SharedPreferences.Editor editor = preferences.edit();
@@ -155,25 +158,30 @@ public class Grille {
     public void drawGrille(Canvas canvas) {
         if (image == null) {
             image = new Image(this);
+
+        }
+        if (fontchange == null && canvas != null) {
+            fontchange = Bitmap.createScaledBitmap(font, canvas.getWidth(), canvas.getHeight(), false);
             loading.setExecute(false);
         }
-        fontchange = Bitmap.createScaledBitmap(font, canvas.getWidth(), canvas.getHeight(), false);
-        canvas.drawBitmap(fontchange, 0, 0, null);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.BLUE);
-        paint.setStrokeWidth(8);
-        paint.setStyle(Paint.Style.FILL);
-        if (!win) {
-            for (int l = 0; l < lc[0] + 1; l++) {
-                canvas.drawRect(0, tCase * l + tLigne * l, tLigne * (lc[1] + 1) + tCase * lc[1], tCase * l + tLigne * (l + 1), paint);
-            }
-            for (int c = 0; c < lc[1] + 1; c++) {
-                canvas.drawRect(tLigne * c + tCase * c, 0, tLigne * (c + 1) + tCase * c, tLigne * (lc[0] + 1) + tCase * lc[0], paint);
+        if (fontchange != null && canvas != null) {
+            canvas.drawBitmap(fontchange, 0, 0, null);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setARGB(50, 51, 70, 255);
+            paint.setStrokeWidth(8);
+            paint.setStyle(Paint.Style.FILL);
+            if (!win) {
+                for (int l = 0; l < lc[0] + 1; l++) {
+                    canvas.drawRect(0, tCase * l + tLigne * l, tLigne * (lc[1] + 1) + tCase * lc[1], tCase * l + tLigne * (l + 1), paint);
+                }
+                for (int c = 0; c < lc[1] + 1; c++) {
+                    canvas.drawRect(tLigne * c + tCase * c, 0, tLigne * (c + 1) + tCase * c, tLigne * (lc[0] + 1) + tCase * lc[0], paint);
+                }
             }
         }
     }
 
-    boolean getWin() {
+    public boolean getWin() {
         for (int l = 0; l < lc[0]; l++) {
             for (int c = 0; c < lc[1]; c++) {
                 if (grille[coup][l][c] != 'V') {

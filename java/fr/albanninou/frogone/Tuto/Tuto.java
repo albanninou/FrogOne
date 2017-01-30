@@ -1,21 +1,24 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Tuto;
 
 import android.app.Activity;
 import android.content.Context;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import fr.albanninou.frogone.Grille;
+import fr.albanninou.frogone.Thread.GraphiqueThread;
+
 /**
  * Created by Jeune on 23/01/2017.
  */
 
-public class Tuto extends SurfaceView implements SurfaceHolder.Callback{
+public class Tuto extends SurfaceView implements SurfaceHolder.Callback {
     private Grille grille;
     private int step = 0;
     private GraphiqueThread thread;
     private Activity activity;
 
-    public Tuto(Context context,Activity activity) {
+    public Tuto(Context context, Activity activity) {
         super(context);
         getHolder().addCallback(this);
         this.grille = new Grille(1, activity, getHolder());
@@ -23,14 +26,15 @@ public class Tuto extends SurfaceView implements SurfaceHolder.Callback{
     }
 
 
-    public Grille getGrille(){
+    public Grille getGrille() {
         return this.grille;
     }
 
-    public int getStep(){
+    public int getStep() {
         return step;
     }
-    public void setStep(int step){
+
+    public void setStep(int step) {
         this.step = step;
     }
 

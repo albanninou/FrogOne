@@ -1,4 +1,4 @@
-package fr.albanninou.frogone;
+package fr.albanninou.frogone.Main;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,14 +10,16 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.LinearLayout;
 
+import fr.albanninou.frogone.R;
+
 public class MainActivity extends AppCompatActivity {
+    public static Bitmap loadingbmp;
     static LinearLayout menu;
     static SharedPreferences preferences;
     static int lvl = 0;
     static Context context;
     static Activity activity;
     static MainActivity ac;
-    static Bitmap loadingbmp;
 
     public static void setButton() {
         lvl = preferences.getInt("lvl", 0);
