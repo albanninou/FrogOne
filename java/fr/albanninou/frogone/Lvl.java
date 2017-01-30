@@ -19,7 +19,7 @@ public class Lvl extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         this.lvl = lvl;
-        this.grille = new Grille(lvl, activity);
+        this.grille = new Grille(lvl, activity, getHolder());
         this.activity = activity;
     }
     public Grille getGrille(){

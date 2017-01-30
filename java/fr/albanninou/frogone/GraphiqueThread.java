@@ -40,6 +40,8 @@ public class GraphiqueThread extends Thread {
                         if (canvas != null) {
                             float taille = canvas.getWidth();
                             float tCase, tLigne;
+                            grille.setHauteur(canvas.getHeight());
+                            grille.setLargeur(canvas.getWidth());
                             if (grille.getLc()[0] < grille.getLc()[1]) {
                                 tCase = canvas.getWidth() / (grille.getLc()[1] + 1);
                                 grille.settCase(tCase);

@@ -8,13 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
+import android.view.SurfaceHolder;
 
 public class Grille {
-    private Bitmap a, b, c, d, e, winbmp, rotate, font, fontchange = null;
+    private Bitmap a, b, c, d, e, winbmp, loadingbmp, rotate, font, fontchange = null;
     private Bitmap lastBmp;
     private int lastDegre;
     private char lasttype;
@@ -23,15 +23,27 @@ public class Grille {
     private int select[] = {-1, 1};
     private int coup = 0;
     private Jeton jeton[][];
-    private float tCase, tLigne;
+    private float tCase, tLigne, hauteur, largeur;
     private int wintaillel = 0;
     private int wintaillec = 0;
     private Activity activity;
     private boolean stop = false, finish = false, win = false;
     private int lvl;
     private Image image;
+    private LoadingThread loading;
 
-    public Grille(int lvl, Activity activity) {
+    public Grille(int lvl, Activity activity, SurfaceHolder holder) {
+        Resources res = activity.getResources();
+        a = BitmapFactory.decodeResource(res, R.drawable.jetonr);
+        b = BitmapFactory.decodeResource(res, R.drawable.jetonv);
+        c = BitmapFactory.decodeResource(res, R.drawable.jetonb);
+        d = BitmapFactory.decodeResource(res, R.drawable.jetonn);
+        e = BitmapFactory.decodeResource(res, R.drawable.jetono);
+        font = BitmapFactory.decodeResource(res, R.drawable.font);
+        winbmp = BitmapFactory.decodeResource(res, R.drawable.win);
+
+        loading = new LoadingThread(holder);
+        loading.start();
         grille = new char[100][100][100];
         this.grille[0] = ConfigLvl.getGrille(lvl);
         this.lc = ConfigLvl.getLc(lvl);
@@ -41,14 +53,7 @@ public class Grille {
                 jeton[l][c] = new Jeton(grille[0][l][c], lc, this);
             }
         }
-        Resources res = activity.getResources();
-        a = BitmapFactory.decodeResource(res, R.drawable.jetonr);
-        b = BitmapFactory.decodeResource(res, R.drawable.jetonv);
-        c = BitmapFactory.decodeResource(res, R.drawable.jetonb);
-        d = BitmapFactory.decodeResource(res, R.drawable.jetonn);
-        e = BitmapFactory.decodeResource(res, R.drawable.jetono);
-        font = BitmapFactory.decodeResource(res, R.drawable.font);
-        winbmp = BitmapFactory.decodeResource(res, R.drawable.win);
+
         this.activity = activity;
         this.lvl = lvl;
     }
@@ -85,16 +90,20 @@ public class Grille {
     public Image getImage() {
         return image;
     }
+
     public void drawWin(Canvas canvas) {
 
         wintaillel = wintaillel + 30;
         wintaillec = wintaillec + 15;
-        if (wintaillec < canvas.getWidth() && wintaillel < canvas.getHeight()) {
+        if (wintaillec < canvas.getWidth()) {
             drawGrille(canvas);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(winbmp, wintaillec, wintaillel, true);
-            canvas.drawBitmap(scaledBitmap, canvas.getWidth() / 2 - wintaillec / 2, canvas.getHeight() / 2 - wintaillel / 2, null);
+            //Bitmap scaledBitmap = Bitmap.createScaledBitmap(winbmp, wintaillec, wintaillel, true);
+            if (image.getWin(wintaillec) != null) {
+                canvas.drawBitmap(image.getWin(wintaillec), canvas.getWidth() / 2 - wintaillec / 2, canvas.getHeight() / 2 - wintaillel / 2, null);
+            }
         } else {
             activity.finish();
+            image = null;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
             SharedPreferences.Editor editor = preferences.edit();
             Intent intent = new Intent(activity, LvlActivity.class);
@@ -146,6 +155,7 @@ public class Grille {
     public void drawGrille(Canvas canvas) {
         if (image == null) {
             image = new Image(this);
+            loading.setExecute(false);
         }
         fontchange = Bitmap.createScaledBitmap(font, canvas.getWidth(), canvas.getHeight(), false);
         canvas.drawBitmap(fontchange, 0, 0, null);
@@ -194,34 +204,6 @@ public class Grille {
                 GameOneBreak(casser);
             }
 
-        }
-    }
-
-    public Bitmap rotateImage(Bitmap src, int degree, int image, RectF rect, char type) {
-        if (lastBmp == src && degree == lastDegre && lasttype == type && rotate != null) {
-            return rotate;
-        } else {
-            if (src != null) {
-                lastBmp = src;
-                lastDegre = degree;
-                lasttype = type;
-                Matrix matrix = new Matrix();
-                matrix.postRotate(degree);
-                if (src.getWidth() > 0 && src.getHeight() > 0) {
-                    Bitmap bmp = Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
-                    if (Math.round(rect.width() - image * 2) > 0 && Math.round(rect.height() - image * 2) > 0) {
-                        bmp = Bitmap.createScaledBitmap(bmp, Math.round(rect.width() - image * 2), Math.round(rect.height() - image * 2), false);
-                        rotate = bmp;
-                        return bmp;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
         }
     }
 
@@ -612,6 +594,10 @@ public class Grille {
         return e;
     }
 
+    public Bitmap getWinbmp() {
+        return winbmp;
+    }
+
     public float gettCase() {
         return tCase;
     }
@@ -627,4 +613,21 @@ public class Grille {
     public void settLigne(float tLigne) {
         this.tLigne = tLigne;
     }
+
+    public float getHauteur() {
+        return hauteur;
+    }
+
+    public void setHauteur(float hauteur) {
+        this.hauteur = hauteur;
+    }
+
+    public float getLargeur() {
+        return largeur;
+    }
+
+    public void setLargeur(float largeur) {
+        this.largeur = largeur;
+    }
+
 }

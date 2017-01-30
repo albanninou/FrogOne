@@ -13,11 +13,16 @@ public class Image {
     Canvas canvas;
     Bitmap[][] rotate;
     Bitmap[][] retrecir;
+    Bitmap[] win;
 
     public Image(Grille grille) {
         this.grille = grille;
-        retrecir = new Bitmap[10][(int) grille.gettCase() / 2];
-        rotate = new Bitmap[10][(int) grille.gettCase() / 2];
+        retrecir = new Bitmap[5][(int) grille.gettCase() / 2];
+        rotate = new Bitmap[5][(int) grille.gettCase() / 2];
+        win = new Bitmap[(int) (grille.getLargeur() / 15 + 1)];
+        for (int i = 0; i < grille.getLargeur() / 15; i++) {
+            win[i] = Bitmap.createScaledBitmap(grille.getWinbmp(), 15 * i + 1, 30 * i + 1, true);
+        }
         for (int i = 0; i < 5; i++) {
             for (int s = 0; s < (grille.gettCase() - 16) / 2; s++) {
                 Matrix matrix;
@@ -80,6 +85,10 @@ public class Image {
         return null;
 
 
+    }
+
+    public Bitmap getWin(int image) {
+        return win[image / 15];
     }
 
     public Bitmap getRotate(char type, int image) {
