@@ -105,7 +105,6 @@ public class Grille {
             }
         } else {
             activity.finish();
-            image.destroy();
             image = null;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
             SharedPreferences.Editor editor = preferences.edit();
