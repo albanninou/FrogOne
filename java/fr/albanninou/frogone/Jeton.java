@@ -41,10 +41,7 @@ public class Jeton {
     }
 
     Jeton drawJeton(Canvas canvas, RectF rect) {
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.WHITE);
-        paint.setStrokeWidth(8);
-        paint.setStyle(Paint.Style.FILL);
+
         if (type == 'A') {
             bmp = grille.getA();
         }
@@ -97,19 +94,23 @@ public class Jeton {
 
 
                 } else {
-                    if (grille.getImage().getRetrecir(type, image) != null && !grille.getImage().getRetrecir(type, image).isRecycled()) {
-                        canvas.drawBitmap(grille.getImage().getRetrecir(type, image), rect.left + image / 2, rect.top + image / 2, null);
+                    if (grille.getImage().getRetrecir(type, image) != null) {
+                        if (!grille.getImage().getRetrecir(type, image).isRecycled()) {
+                            canvas.drawBitmap(grille.getImage().getRetrecir(type, image), rect.left + image / 2, rect.top + image / 2, null);
+                        }
                     }
                 }
             } else {
                 if (canbreak) {
                     image = image + sens;
-                    if (rect.height() / 2 - image < rect.height() / 4) {
+                    if (rect.height() / 2 - image < rect.height() / 4 + 1) {
                         sens = -1;
                     }
                     if (rect.height() / 2 - image > rect.height() / 2) {
                         sens = 1;
                     }
+                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setStrokeWidth(3);
                     paint.setStyle(Paint.Style.STROKE);
                     paint.setColor(Color.BLACK);
                     canvas.drawCircle(rect.centerX(), rect.centerY(), rect.height() / 2 - image, paint);

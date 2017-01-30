@@ -87,6 +87,18 @@ public class Image {
 
     }
 
+    public void destroy() {
+        for (int i = 0; i < 5; i++) {
+            for (int s = 0; s < (grille.gettCase() - 16) / 2; s++) {
+                retrecir[i][s].recycle();
+                rotate[i][s].recycle();
+            }
+        }
+        for (int i = 0; i < grille.getLargeur() / 15; i++) {
+            win[i].recycle();
+        }
+    }
+
     public Bitmap getWin(int image) {
         return win[image / 15];
     }
