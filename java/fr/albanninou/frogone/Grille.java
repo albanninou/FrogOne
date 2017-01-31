@@ -53,7 +53,7 @@ public class Grille {
         jeton = new Jeton[100][100];
         for (int l = 0; l < lc[0]; l++) {
             for (int c = 0; c < lc[1]; c++) {
-                jeton[l][c] = new Jeton(grille[0][l][c], lc, this);
+                jeton[l][c] = new Jeton(grille[0][l][c], l, c, this);
             }
         }
 
@@ -131,7 +131,7 @@ public class Grille {
     public void restart() {
         for (int l = 0; l < lc[0]; l++) {
             for (int c = 0; c < lc[1]; c++) {
-                jeton[l][c] = new Jeton(grille[0][l][c], lc, this);
+                jeton[l][c] = new Jeton(grille[0][l][c], l, c, this);
             }
         }
         coup = 0;
@@ -142,7 +142,7 @@ public class Grille {
         if (coup > 0) {
             for (int l = 0; l < lc[0]; l++) {
                 for (int c = 0; c < lc[1]; c++) {
-                    jeton[l][c] = new Jeton(grille[coup - 1][l][c], lc, this);
+                    jeton[l][c] = new Jeton(grille[coup - 1][l][c], l, c, this);
                 }
             }
             select[0] = -1;

@@ -5,21 +5,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import fr.albanninou.frogone.R;
 
 public class MainActivity extends AppCompatActivity {
     public static Bitmap loadingbmp;
+    public static int width = 0, height = 0;
     static LinearLayout menu;
     static SharedPreferences preferences;
     static int lvl = 0;
     static Context context;
     static Activity activity;
     static MainActivity ac;
+    private GLSurfaceView mSurfaceView;
+    private GLSurfaceView mGLView;
 
     public static void setButton() {
         lvl = preferences.getInt("lvl", 0);
@@ -41,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
         ac = this;
         setButton();
         loadingbmp = BitmapFactory.decodeResource(getResources(), R.drawable.loading);
+        WindowManager w = getWindowManager();
+        Display d = w.getDefaultDisplay();
+        width = d.getWidth();
+        height = d.getHeight();
     }
+
 
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
@@ -17,17 +18,23 @@ import android.widget.TextView;
 
 import fr.albanninou.frogone.Main.MainActivity;
 import fr.albanninou.frogone.R;
+import fr.albanninou.frogone.Render;
+
+/**
+ * Created by eleve on 31/01/2017.
+ */
 
 public class LvlActivity extends Activity implements View.OnTouchListener {
 
     public static int lvl;
-    public static fr.albanninou.frogone.Lvl.Lvl Lvl;
+    public static Lvl Lvl;
     public static int lvlmax = 17;
     public static Resources res;
     public static Activity act;
     public static RelativeLayout layout;
     public static TextView win;
     public static TextView coups;
+    private GLSurfaceView glSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +57,13 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         layout.removeView(win);
         layout.removeView(coups);
         layout.removeView(textlvl);
-        layout.addView(Lvl);
+        //layout.addView(Lvl);
         layout.addView(coups);
-
+        //Create an Instance with this Activity
+        glSurface = new GLSurfaceView(this);
+        //Set our own Renderer
+        glSurface.setRenderer(new Render(Lvl));
+        layout.addView(glSurface);
 
         final Button b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {
