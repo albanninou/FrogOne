@@ -43,7 +43,6 @@ public class Lvl extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
         thread = new GraphiqueThread(grille, holder);
         thread.start();
 
@@ -59,7 +58,6 @@ public class Lvl extends SurfaceView implements SurfaceHolder.Callback {
         boolean retry = true;
         thread.setExecute(false);
         while (retry) {
-
             try {
                 thread.join();
                 retry = false;

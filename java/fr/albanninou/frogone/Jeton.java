@@ -42,8 +42,8 @@ public class Jeton {
     private int[] place;
     private boolean select;
     private boolean canbreak;
-    private int image = 0;
-    private int sens = 1;
+    private float image = 0;
+    private float sens = 1;
     private boolean broke = false;
     private Bitmap bmp;
     private boolean isdraw = false;
@@ -87,61 +87,65 @@ public class Jeton {
         this.image = image;
     }
 
+    public boolean isSelect() {
+        loadTexture = true;
+        return this.select;
+    }
+
+    Jeton setSelect(boolean select) {
+        if (select) {
+            image = 0;
+        }
+        this.select = select;
+
+        return this;
+    }
+
+    public boolean isCanbreak() {
+        return canbreak;
+    }
+
     public void draw(GL10 gl, float tLigne, float tCase) {
-        if (!loadTexture && type != 'V') {
+        if (!loadTexture && (type2 != 'V' || canbreak)) {
             loadGLTexture(gl);
             loadTexture = true;
         }
-        if (type == 'V' && !select) {
+        if (type2 == 'V' && !select) {
             return;
         }
 
-        gl.glTranslatef(-0.52f + tLigne * (colonne + 1) + tCase * colonne + tCase * 0.5f, 0.85f - tLigne * (ligne + 1) - tCase * ligne - tCase * 0.5f, -2f);
+        gl.glTranslatef(-1.48f + tLigne * (colonne + 1) + tCase * colonne + tCase * 0.5f, 2.53f - tLigne * (ligne + 1) - tCase * ligne - tCase * 0.5f, -6.10f);
         gl.glRotatef(180, 0.0f, 0.0f, 1.0f);
 
         if (broke) {
-            image = image + 2;
-            if (image / tCase < tCase / 2) {
-                gl.glRotatef(image, 0.0f, 0.0f, 1.0f);
-                gl.glScalef(0.5f, 1.0f, 2.0f);
-                //canvas.drawBitmap(grille.getImage().getRotate(type2, image), rect.left + image, rect.top + image, null);
-
-            } else {
+            gl.glRotatef(image * 150f, 0.0f, 0.0f, 1.0f);
+            gl.glScalef(1f - image * 2, 1.0f - image * 2, 0f);
+            image = image + 0.005f;
+            if (1 - image * 2 < 0) {
+                type2 = 'V';
                 broke = false;
                 image = 0;
             }
-        } /*else {
+        } else {
             if (type != 'V') {
                 if (select || image != 0) {
                     if (select) {
-                        if (rect.height() / 2 - image < rect.height() / 4) {
-                            sens = -1;
+                        if (1 - image < 0.7) {
+                            sens = -0.005f;
                         }
-                        if (rect.height() / 2 - image >= rect.height() / 2) {
-                            sens = 1;
+                        if (1 - image >= 1) {
+                            sens = 0.005f;
                         }
                         image = image + sens;
                     } else {
-                        if (image - 2 > 0) {
-                            image = image - 2;
-                        } else {
-                            image = 0;
-                        }
+                        image = image - 0.02f;
                     }
                     if (image < 0) {
                         image = 0;
                     }
-                    if (grille.getImage().getRetrecir(type, image) != null && !grille.getImage().getRetrecir(type, image).isRecycled()) {
-                        canvas.drawBitmap(grille.getImage().getRetrecir(type, image), rect.left + image, rect.top + image, null);
-                    }
-
-
-                } else {
-                    if (grille.getImage().getRetrecir(type, image) != null && !grille.getImage().getRetrecir(type, image).isRecycled()) {
-                        canvas.drawBitmap(grille.getImage().getRetrecir(type, image), rect.left + image / 2, rect.top + image / 2, null);
-                    }
+                    gl.glScalef(1f - image * 2, 1.0f - image * 2, 0f);
                 }
-            } else {
+            } /*else {
                 if (canbreak) {
                     image = image + sens;
                     if (rect.height() / 2 - image < rect.height() / 4 + 1) {
@@ -159,8 +163,8 @@ public class Jeton {
                 } else {
                     image = 0;
                 }
-            }
-        }*/
+            }*/
+        }
 
         gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
 
@@ -199,19 +203,22 @@ public class Jeton {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
 
-        if (type == 'A') {
+        if (type2 == 'A') {
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getA(), 0);
         }
-        if (type == 'B') {
+        if (type2 == 'B') {
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getB(), 0);
         }
-        if (type == 'C') {
+        if (type2 == 'C') {
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getC(), 0);
         }
-        if (type == 'D') {
+        if (type2 == 'D') {
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getD(), 0);
         }
-        if (type == 'E') {
+        if (type2 == 'E') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getE(), 0);
+        }
+        if (canbreak) {
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getE(), 0);
         }
 
@@ -223,6 +230,7 @@ public class Jeton {
 
     public void setType(char type) {
         this.type = type;
+        this.type2 = type;
     }
 
     public boolean getBroke() {
@@ -236,16 +244,8 @@ public class Jeton {
         this.broke = broke;
     }
 
-    Jeton setSelect(boolean select) {
-        if (select) {
-            image = 0;
-        }
-        this.select = select;
-
-        return this;
-    }
-
     Jeton broke() {
+        loadTexture = false;
         select = false;
         broke = true;
         image = 0;

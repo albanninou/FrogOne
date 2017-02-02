@@ -70,19 +70,23 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         final Button b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                coups.setText("Coup(s) : 0");
-                layout.removeView(coups);
-                layout.addView(coups);
-                Lvl.restart();
+                if (!Lvl.getGrille().getWinBoolean()) {
+                    coups.setText("Coup(s) : 0");
+                    layout.removeView(coups);
+                    layout.addView(coups);
+                    Lvl.restart();
+                }
             }
         });
         final Button b2 = (Button) findViewById(R.id.annuler);
         b2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Lvl.undow();
-                coups.setText("Coup(s) : " + Lvl.getGrille().getCoup());
-                layout.removeView(coups);
-                layout.addView(coups);
+                if (!Lvl.getGrille().getWinBoolean()) {
+                    Lvl.undow();
+                    coups.setText("Coup(s) : " + Lvl.getGrille().getCoup());
+                    layout.removeView(coups);
+                    layout.addView(coups);
+                }
             }
         });
         layout.removeView(b1);
@@ -118,28 +122,27 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
-                float x = event.getX();
-                float y = event.getY();
-                int X = (int) ((x) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[1]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[1] + 1))) / ((float) Lvl.getGrille().getLc()[1])));
-                int Y = (int) ((y - 40) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[0]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[0] + 1))) / ((float) Lvl.getGrille().getLc()[0])));
-                if (X < 0) {
-                    X = 0;
+                if (Lvl.getGrille().getWinBoolean() != true) {
+                    float x = event.getX();
+                    float y = event.getY();
+                    int X = (int) ((x) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[1]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[1] + 1))) / ((float) Lvl.getGrille().getLc()[1])));
+                    int Y = (int) ((y - 40) / ((Lvl.getGrille().gettCase() * ((float) Lvl.getGrille().getLc()[0]) + Lvl.getGrille().gettLigne() * ((float) (Lvl.getGrille().getLc()[0] + 1))) / ((float) Lvl.getGrille().getLc()[0])));
+                    if (X < 0) {
+                        X = 0;
+                    }
+                    if (Y < 0) {
+                        Y = 0;
+                    }
+                    if (X >= Lvl.getGrille().getLc()[1] || Y >= Lvl.getGrille().getLc()[0]) {
+                        return true;
+                    }
+                    Lvl.getGrille().setSelect(Y, X);
+                    //Log.w("myApp",""+Lvl.getGrille().getGrille()[Lvl.getGrille().getCoup()]);
+                    if (Lvl.getGrille().getWin()) {
+                        Lvl.getGrille().setWinBoolean(true);
+                        layout.addView(win);
+                    }
                 }
-                if (Y < 0) {
-                    Y = 0;
-                }
-                if (X >= Lvl.getGrille().getLc()[1] || Y >= Lvl.getGrille().getLc()[0]) {
-                    return true;
-                }
-
-                Lvl.getGrille().setSelect(Y, X);
-
-                if (Lvl.getGrille().getWin() && Lvl.getGrille().getWinBoolean() != true) {
-                    Lvl.getGrille().setWinBoolean(true);
-                    layout.addView(win);
-                }
-
                 break;
             case MotionEvent.ACTION_UP:
                 break;

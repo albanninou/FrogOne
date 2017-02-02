@@ -20,6 +20,7 @@ public class Render implements GLSurfaceView.Renderer {
 
     float tCase = 0, tLigne = 0;
     float lCase = 0, lLigne = 0;
+    float ratio = 0;
     /**
      * Angle For The Pyramid
      */
@@ -65,22 +66,26 @@ public class Render implements GLSurfaceView.Renderer {
      * Here we do our drawing
      */
     public void onDrawFrame(GL10 gl) {
+
         //Clear Screen And Depth Buffer
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();                    //Reset The Current Modelview Matrix
         //Log.w("myApp", "tCase : "+tCase);
+        if (!lvl.getGrille().isLoad() || lvl.getGrille().getWinBoolean()) {
+            return;
+        }
         if (lvl.getGrille().getJeton() != null) {
             for (int l = 0; l < lvl.getGrille().getLc()[0]; l++) {
                 for (int c = 0; c < lvl.getGrille().getLc()[1]; c++) {
-                    //gl.glTranslatef(-0.49f,0.83f, -2.0f);
-                    //Move down 1.0 Unit And Into The Screen 6.0
                     //gl.glRotatef(rquad, 0.0f, 0.0f, 1.0f);    //Rotate The Square On The X axis ( NEW )
                     if (lvl.getGrille().getSelect()[0] != -1) {
                         if (lvl.getGrille().GameOneCanBreak(l, c)) {
                             lvl.getGrille().getJeton()[l][c].setCanBreak(true);
                         }
                     }
-                    lvl.getGrille().getJeton()[l][c].draw(gl, tLigne, tCase);
+                    if (lvl.getGrille().getJeton()[l][c].getType() != 'V' || lvl.getGrille().getJeton()[l][c].isSelect() || lvl.getGrille().getJeton()[l][c].getBroke() || lvl.getGrille().getJeton()[l][c].isCanbreak()) {
+                        lvl.getGrille().getJeton()[l][c].draw(gl, tLigne, tCase);
+                    }
                     gl.glLoadIdentity();
                 }
             }
@@ -99,10 +104,10 @@ public class Render implements GLSurfaceView.Renderer {
      */
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (lvl.getGrille().getLc()[0] < lvl.getGrille().getLc()[1]) {
-            tCase = 1f / (lvl.getGrille().getLc()[1] + 1);
+            tCase = 3f / (lvl.getGrille().getLc()[1] + 1);
             tLigne = tCase / (lvl.getGrille().getLc()[1] + 1);
         } else {
-            tCase = 1f / (lvl.getGrille().getLc()[0] + 1);
+            tCase = 3f / (lvl.getGrille().getLc()[0] + 1);
             tLigne = tCase / (lvl.getGrille().getLc()[0] + 1);
         }
         tCase = (Math.round((int) (tCase * 100f)) - 0.5f) / 100f;
@@ -126,6 +131,7 @@ public class Render implements GLSurfaceView.Renderer {
         gl.glLoadIdentity();                    //Reset The Projection Matrix
 
         //Calculate The Aspect Ratio Of The Window
+
         GLU.gluPerspective(gl, 45.0f, (float) width / (float) height, 0.1f, 100.0f);
 
         gl.glMatrixMode(GL10.GL_MODELVIEW);    //Select The Modelview Matrix

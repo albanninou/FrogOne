@@ -55,7 +55,7 @@ public class GraphiqueThread extends Thread {
                                 tLigne = tCase / (grille.getLc()[0] + 1);
                                 grille.settLigne(tLigne);
                             }
-                            if (grille.getWinBoolean() == false) {
+                            if (grille.getWin() == false) {
                                 grille.drawGrille(canvas);
                             } else {
                                 grille.drawWin(canvas);

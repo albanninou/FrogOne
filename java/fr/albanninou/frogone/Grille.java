@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import fr.albanninou.frogone.Lvl.LvlActivity;
@@ -33,6 +34,7 @@ public class Grille {
     private int lvl;
     private Image image;
     private LoadingThread loading;
+    private boolean load = false;
 
     public Grille(int lvl, Activity activity, SurfaceHolder holder) {
         Resources res = activity.getResources();
@@ -147,11 +149,12 @@ public class Grille {
     public void drawGrille(Canvas canvas) {
         if (image == null) {
             image = new Image(this);
-
         }
         if (fontchange == null && canvas != null) {
             fontchange = Bitmap.createScaledBitmap(font, canvas.getWidth(), canvas.getHeight(), false);
+            load = true;
             loading.setExecute(false);
+
         }
         if (fontchange != null && canvas != null) {
             canvas.drawBitmap(fontchange, 0, 0, null);
@@ -178,6 +181,7 @@ public class Grille {
                 }
             }
         }
+        win = true;
         return true;
     }
 
@@ -200,7 +204,6 @@ public class Grille {
                 int[] casser = {y, x};
                 GameOneBreak(casser);
             }
-
         }
     }
 
@@ -217,6 +220,9 @@ public class Grille {
         coups = coup;
         boolean cassez = false;
         boolean stop = false;
+        if (selectL == -1) {
+            return false;
+        }
         if (grille[coups][l][c] != 'V') {//on verifie que la casse est bien vide
             return false;
         }
@@ -326,11 +332,8 @@ public class Grille {
         }
 
         coup++;
+
         if (grille[coup][cassezL][cassezC] != 'V') {//on verifie que la casse est bien vide
-            coup--;
-            return false;
-        }
-        if (!(selectC == cassezC || selectL == cassezL || Math.abs(selectL - cassezL) == Math.abs(selectC - cassezC))) {//on verifie si il joue bien en ligne ou en diagonale
             coup--;
             return false;
         }
@@ -340,11 +343,9 @@ public class Grille {
         }
         grille[coup][cassezL][cassezC] = grille[coup][selectL][selectC];
         grille[coup][selectL][selectC] = 'V';
-
         int rang;
         for (int i = 0; i < 3; i++) {
             rang = 0;
-
             while (!stop) {
                 if (cassezC - 2 + i + rang > lc[1] - 1 || cassezC - 2 + i + rang < 0) {
                     stop = true;
@@ -369,11 +370,9 @@ public class Grille {
                 i = 3;
                 Bcassez = true;
             }
-
         }
         for (int i = 0; i < 3; i++) {
             rang = 0;
-
             while (!stop) {
                 if (cassezL - 2 + i + rang > lc[0] - 1 || cassezL - 2 + i + rang < 0) {
                     stop = true;
@@ -402,7 +401,6 @@ public class Grille {
         }
         for (int i = 0; i < 3; i++) {
             rang = 0;
-
             while (!stop) {
                 if (cassezL - 2 + i + rang > lc[0] - 1 || cassezL - 2 + i + rang < 0 || cassezC - 2 + i + rang > lc[1] - 1 || cassezC - 2 + i + rang < 0) {
                     stop = true;
@@ -427,12 +425,9 @@ public class Grille {
                 i = 3;
                 Bcassez = true;
             }
-
         }
-
         for (int i = 0; i < 3; i++) {
             rang = 0;
-
             while (!stop) {
                 if (cassezL + 2 - i - rang > lc[0] - 1 || cassezL + 2 - i - rang < 0 || cassezC - 2 + i + rang > lc[1] - 1 || cassezC - 2 + i + rang < 0) {
                     stop = true;
@@ -457,11 +452,11 @@ public class Grille {
                 i = 3;
                 Bcassez = true;
             }
-
         }
+        Log.w("myApp", "cassez : " + Bcassez);
         if (Bcassez) {
             select[0] = -1;
-            jeton[cassezL][cassezC].setType(grille[coup - 1][selectL][selectL]);
+            jeton[cassezL][cassezC].setType(grille[coup][cassezL][cassezC]);
             jeton[selectL][selectC].setType('V');
             jeton[selectL][selectC].setSelect(false);
             jeton[cassezL][cassezC].broke();
@@ -627,4 +622,11 @@ public class Grille {
         this.largeur = largeur;
     }
 
+    public boolean isLoad() {
+        return load;
+    }
+
+    public void setLoad(boolean load) {
+        this.load = load;
+    }
 }
