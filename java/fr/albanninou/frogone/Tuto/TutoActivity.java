@@ -3,6 +3,7 @@ package fr.albanninou.frogone.Tuto;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
@@ -10,14 +11,17 @@ import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import fr.albanninou.frogone.GLSurface;
 import fr.albanninou.frogone.Main.MainActivity;
 import fr.albanninou.frogone.R;
+import fr.albanninou.frogone.Render;
 
 public class TutoActivity extends Activity {
     public static Resources res;
     public TextView commentaire;
     public RelativeLayout layout;
     public Tuto tuto;
+    private GLSurfaceView glSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,10 @@ public class TutoActivity extends Activity {
         commentaire = (TextView) findViewById(R.id.commentaire);
         commentaire.setText(R.string.step1);
         layout.removeView(commentaire);
+        glSurface = new GLSurface(this);
+        //Set our own Renderer
+        glSurface.setRenderer(new Render(tuto.getGrille()));
+        layout.addView(glSurface);
         layout.addView(tuto);
         layout.addView(commentaire);
 

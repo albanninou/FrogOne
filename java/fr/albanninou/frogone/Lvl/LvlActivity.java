@@ -59,13 +59,12 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         layout.removeView(coups);
         layout.removeView(textlvl);
 
-        layout.addView(coups);
+
         //Create an Instance with this Activity
         glSurface = new GLSurface(this);
         //Set our own Renderer
-        glSurface.setRenderer(new Render(Lvl));
-        layout.addView(glSurface);
-        layout.addView(Lvl);
+        glSurface.setRenderer(new Render(Lvl.getGrille()));
+
 
         final Button b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {
@@ -91,9 +90,12 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         });
         layout.removeView(b1);
         layout.removeView(b2);
+        layout.addView(glSurface);
+        layout.addView(Lvl);
+        layout.addView(textlvl);
+        layout.addView(coups);
         layout.addView(b1);
         layout.addView(b2);
-        layout.addView(textlvl);
 
     }
 

@@ -21,7 +21,8 @@ public class Tuto extends SurfaceView implements SurfaceHolder.Callback {
     public Tuto(Context context, Activity activity) {
         super(context);
         getHolder().addCallback(this);
-        this.grille = new Grille(1, activity, getHolder());
+        this.grille = new Grille(1, activity, getHolder(), thread);
+        this.grille.setTuto(true);
         this.activity = activity;
     }
 

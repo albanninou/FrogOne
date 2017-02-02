@@ -6,8 +6,6 @@ import android.opengl.GLU;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import fr.albanninou.frogone.Lvl.Lvl;
-
 /**
  * Created by eleve on 31/01/2017.
  */
@@ -29,13 +27,13 @@ public class Render implements GLSurfaceView.Renderer {
      * Angle For The Cube
      */
     private float rquad;
-    private Lvl lvl;
+    private Grille grille;
 
     /**
      * Instance the Triangle and Square objects
      */
-    public Render(Lvl lvl) {
-        this.lvl = lvl;
+    public Render(Grille grille) {
+        this.grille = grille;
     }
 
     /**
@@ -44,9 +42,9 @@ public class Render implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //Really Nice Perspective Calculations
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
-        for (int l = 0; l < lvl.getGrille().getLc()[0]; l++) {
-            for (int c = 0; c < lvl.getGrille().getLc()[1]; c++) {
-                lvl.getGrille().getJeton()[l][c].loadGLTexture(gl);
+        for (int l = 0; l < grille.getLc()[0]; l++) {
+            for (int c = 0; c < grille.getLc()[1]; c++) {
+                grille.getJeton()[l][c].loadGLTexture(gl);
             }
         }
         gl.glEnable(GL10.GL_TEXTURE_2D);            //Enable Texture Mapping ( NEW )
@@ -71,20 +69,27 @@ public class Render implements GLSurfaceView.Renderer {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();                    //Reset The Current Modelview Matrix
         //Log.w("myApp", "tCase : "+tCase);
-        if (!lvl.getGrille().isLoad() || lvl.getGrille().getWinBoolean()) {
+        if (!grille.isLoad() || grille.getWinBoolean()) {
             return;
         }
-        if (lvl.getGrille().getJeton() != null) {
-            for (int l = 0; l < lvl.getGrille().getLc()[0]; l++) {
-                for (int c = 0; c < lvl.getGrille().getLc()[1]; c++) {
+        if (grille.getJeton() != null) {
+            for (int l = 0; l < grille.getLc()[0]; l++) {
+                for (int c = 0; c < grille.getLc()[1]; c++) {
                     //gl.glRotatef(rquad, 0.0f, 0.0f, 1.0f);    //Rotate The Square On The X axis ( NEW )
-                    if (lvl.getGrille().getSelect()[0] != -1) {
-                        if (lvl.getGrille().GameOneCanBreak(l, c)) {
-                            lvl.getGrille().getJeton()[l][c].setCanBreak(true);
+                    if (grille.getSelect()[0] != -1) {
+                        if (grille.GameOneCanBreak(l, c)) {
+                            grille.getJeton()[l][c].setCanBreak(true);
+                        } else {
+                            grille.getJeton()[l][c].setCanBreak(false);
                         }
+                    } else {
+                        grille.getJeton()[l][c].setCanBreak(false);
                     }
-                    if (lvl.getGrille().getJeton()[l][c].getType() != 'V' || lvl.getGrille().getJeton()[l][c].isSelect() || lvl.getGrille().getJeton()[l][c].getBroke() || lvl.getGrille().getJeton()[l][c].isCanbreak()) {
-                        lvl.getGrille().getJeton()[l][c].draw(gl, tLigne, tCase);
+                    if (grille.getJeton()[l][c].getType() != 'V' || grille.getJeton()[l][c].isSelect() || grille.getJeton()[l][c].getBroke() || grille.getJeton()[l][c].isCanbreak()) {
+                        if (!grille.getJeton()[l][c].isLoadTexture()) {
+                            grille.getJeton()[l][c].loadGLTexture(gl);
+                        }
+                        grille.getJeton()[l][c].draw(gl, tLigne, tCase);
                     }
                     gl.glLoadIdentity();
                 }
@@ -103,24 +108,24 @@ public class Render implements GLSurfaceView.Renderer {
      * If the surface changes, reset the view
      */
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        if (lvl.getGrille().getLc()[0] < lvl.getGrille().getLc()[1]) {
-            tCase = 3f / (lvl.getGrille().getLc()[1] + 1);
-            tLigne = tCase / (lvl.getGrille().getLc()[1] + 1);
+        if (grille.getLc()[0] < grille.getLc()[1]) {
+            tCase = 3f / (grille.getLc()[1] + 1);
+            tLigne = tCase / (grille.getLc()[1] + 1);
         } else {
-            tCase = 3f / (lvl.getGrille().getLc()[0] + 1);
-            tLigne = tCase / (lvl.getGrille().getLc()[0] + 1);
+            tCase = 3f / (grille.getLc()[0] + 1);
+            tLigne = tCase / (grille.getLc()[0] + 1);
         }
         tCase = (Math.round((int) (tCase * 100f)) - 0.5f) / 100f;
         tLigne = (float) (Math.round((int) (tLigne * 100f) - 0.5f)) / 100f;
-        for (int l = 0; l < lvl.getGrille().getLc()[0]; l++) {
-            for (int c = 0; c < lvl.getGrille().getLc()[1]; c++) {
+        for (int l = 0; l < grille.getLc()[0]; l++) {
+            for (int c = 0; c < grille.getLc()[1]; c++) {
                 float vertices[] = {
                         -tCase / 2f, -tCase / 2f, 0.0f,    //Bottom Left
                         tCase / 2f, -tCase / 2f, 0.0f,        //Bottom Right
                         -tCase / 2f, tCase / 2f, 0.0f,        //Top Left
                         tCase / 2f, tCase / 2f, 0.0f        //Top Right
                 };
-                lvl.getGrille().getJeton()[l][c].setVertices(vertices);
+                grille.getJeton()[l][c].setVertices(vertices);
             }
         }
         if (height == 0) {                        //Prevent A Divide By Zero By

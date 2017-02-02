@@ -22,7 +22,7 @@ public class Lvl extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         this.lvl = lvl;
-        this.grille = new Grille(lvl, activity, getHolder());
+        this.grille = new Grille(lvl, activity, getHolder(), thread);
         this.activity = activity;
     }
 
@@ -45,7 +45,6 @@ public class Lvl extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         thread = new GraphiqueThread(grille, holder);
         thread.start();
-
     }
 
     @Override

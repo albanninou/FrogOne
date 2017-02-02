@@ -14,13 +14,11 @@ import android.view.SurfaceHolder;
 
 import fr.albanninou.frogone.Lvl.LvlActivity;
 import fr.albanninou.frogone.Main.ConfigLvl;
+import fr.albanninou.frogone.Thread.GraphiqueThread;
 import fr.albanninou.frogone.Thread.LoadingThread;
 
 public class Grille {
-    private Bitmap a, b, c, d, e, winbmp, loadingbmp, rotate, font, fontchange = null;
-    private Bitmap lastBmp;
-    private int lastDegre;
-    private char lasttype;
+    private Bitmap a, b, c, d, e, winbmp, font, fontchange = null, cercle;
     private char grille[][][];
     private int lc[];
     private int select[] = {-1, 1};
@@ -30,13 +28,16 @@ public class Grille {
     private int wintaillel = 0;
     private int wintaillec = 0;
     private Activity activity;
-    private boolean stop = false, finish = false, win = false;
+    private boolean finish = false, win = false;
     private int lvl;
     private Image image;
     private LoadingThread loading;
     private boolean load = false;
+    private boolean tuto = false;
+    private GraphiqueThread thread;
 
-    public Grille(int lvl, Activity activity, SurfaceHolder holder) {
+    public Grille(int lvl, Activity activity, SurfaceHolder holder, GraphiqueThread thread) {
+        this.thread = thread;
         Resources res = activity.getResources();
         a = BitmapFactory.decodeResource(res, R.drawable.jetonr);
         b = BitmapFactory.decodeResource(res, R.drawable.jetonv);
@@ -45,6 +46,7 @@ public class Grille {
         e = BitmapFactory.decodeResource(res, R.drawable.jetono);
         font = BitmapFactory.decodeResource(res, R.drawable.font);
         winbmp = BitmapFactory.decodeResource(res, R.drawable.win);
+        cercle = BitmapFactory.decodeResource(res, R.drawable.cercle);
 
         loading = new LoadingThread(holder);
         loading.start();
@@ -70,6 +72,9 @@ public class Grille {
         this.win = win;
     }
 
+    public void setTuto(boolean tuto) {
+        this.tuto = tuto;
+    }
     public int[] getSelect() {
         return select;
     }
@@ -82,7 +87,9 @@ public class Grille {
     }
 
     public void drawWin(Canvas canvas) {
-
+        if (tuto) {
+            return;
+        }
         wintaillel = wintaillel + 30;
         wintaillec = wintaillec + 15;
         if (wintaillec < canvas.getWidth()) {
@@ -118,7 +125,12 @@ public class Grille {
     public void restart() {
         for (int l = 0; l < lc[0]; l++) {
             for (int c = 0; c < lc[1]; c++) {
-                jeton[l][c] = new Jeton(grille[0][l][c], l, c, this);
+                jeton[l][c].setType(grille[0][l][c]);
+                jeton[l][c].setImage(0);
+                jeton[l][c].setCanBreak(false);
+                jeton[l][c].setBroke(false);
+                jeton[l][c].setSelect(false);
+                jeton[l][c].setLoadTexture(false);
             }
         }
         coup = 0;
@@ -136,6 +148,7 @@ public class Grille {
                     jeton[l][c].setCanBreak(false);
                     jeton[l][c].setBroke(false);
                     jeton[l][c].setSelect(false);
+                    jeton[l][c].setLoadTexture(false);
                 }
             }
 
@@ -456,11 +469,16 @@ public class Grille {
         Log.w("myApp", "cassez : " + Bcassez);
         if (Bcassez) {
             select[0] = -1;
+
             jeton[cassezL][cassezC].setType(grille[coup][cassezL][cassezC]);
+            jeton[cassezL][cassezC].broke();
+            jeton[cassezL][cassezC].setLoadTexture(false);
+
             jeton[selectL][selectC].setType('V');
             jeton[selectL][selectC].setSelect(false);
-            jeton[cassezL][cassezC].broke();
+
             grille[coup][cassezL][cassezC] = 'V';
+
             if (LvlActivity.coups != null) {
                 LvlActivity.coups.setText("Coup(s) : " + coup);
                 LvlActivity.layout.removeView(LvlActivity.coups);
@@ -468,8 +486,6 @@ public class Grille {
             }
             return true;
         } else {
-            grille[coup][selectL][selectC] = grille[coup][cassezL][cassezC];
-            grille[coup][cassezL][cassezC] = 'V';
             coup--;
             return false;
         }
@@ -584,6 +600,10 @@ public class Grille {
 
     public Bitmap getE() {
         return e;
+    }
+
+    public Bitmap getCercle() {
+        return cercle;
     }
 
     public Bitmap getWinbmp() {

@@ -1,6 +1,5 @@
 package fr.albanninou.frogone;
 
-import android.graphics.Bitmap;
 import android.opengl.GLUtils;
 
 import java.nio.ByteBuffer;
@@ -39,18 +38,15 @@ public class Jeton {
 
     private char type;
     private char type2;
-    private int[] place;
     private boolean select;
     private boolean canbreak;
     private float image = 0;
     private float sens = 1;
     private boolean broke = false;
-    private Bitmap bmp;
-    private boolean isdraw = false;
-    private int rotation = 0;
     private Grille grille;
     private int ligne, colonne;
     private boolean loadTexture = false;
+    private float rotate = 0;
 
     Jeton(char type, int ligne, int colonne, Grille grille) {
         this.type = type;
@@ -88,7 +84,6 @@ public class Jeton {
     }
 
     public boolean isSelect() {
-        loadTexture = true;
         return this.select;
     }
 
@@ -106,11 +101,11 @@ public class Jeton {
     }
 
     public void draw(GL10 gl, float tLigne, float tCase) {
-        if (!loadTexture && (type2 != 'V' || canbreak)) {
+        if (!loadTexture) {
             loadGLTexture(gl);
             loadTexture = true;
         }
-        if (type2 == 'V' && !select) {
+        if (type2 == 'V' && !canbreak) {
             return;
         }
 
@@ -120,11 +115,13 @@ public class Jeton {
         if (broke) {
             gl.glRotatef(image * 150f, 0.0f, 0.0f, 1.0f);
             gl.glScalef(1f - image * 2, 1.0f - image * 2, 0f);
-            image = image + 0.005f;
+            image = image + 0.01f;
             if (1 - image * 2 < 0) {
                 type2 = 'V';
+                type = 'V';
                 broke = false;
                 image = 0;
+                loadTexture = false;
             }
         } else {
             if (type != 'V') {
@@ -145,25 +142,23 @@ public class Jeton {
                     }
                     gl.glScalef(1f - image * 2, 1.0f - image * 2, 0f);
                 }
-            } /*else {
+            } else {
                 if (canbreak) {
+                    if (1 - image < 0.7) {
+                        sens = -0.005f;
+                    }
+                    if (1 - image >= 1) {
+                        sens = 0.005f;
+                    }
                     image = image + sens;
-                    if (rect.height() / 2 - image < rect.height() / 4 + 1) {
-                        sens = -1;
-                    }
-                    if (rect.height() / 2 - image > rect.height() / 2) {
-                        sens = 1;
-                    }
-                    Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paint.setStrokeWidth(3);
-                    paint.setStyle(Paint.Style.STROKE);
-                    paint.setColor(Color.BLACK);
-                    canvas.drawCircle(rect.centerX(), rect.centerY(), rect.height() / 2 - image, paint);
+                    rotate = rotate + 0.01f;
+                    gl.glScalef(0.7f, 0.7f, 0f);
+                    gl.glRotatef(rotate * 150f, 0.0f, 0.0f, -1.0f);
 
                 } else {
                     image = 0;
                 }
-            }*/
+            }
         }
 
         gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
@@ -193,6 +188,7 @@ public class Jeton {
     }
 
     public void loadGLTexture(GL10 gl) {
+        loadTexture = true;
         // loading texture
         // generate one texture pointer
         gl.glGenTextures(1, textures, 0);
@@ -218,8 +214,8 @@ public class Jeton {
         if (type2 == 'E') {
             GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getE(), 0);
         }
-        if (canbreak) {
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getE(), 0);
+        if (type2 == 'V') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getCercle(), 0);
         }
 
     }
@@ -238,24 +234,31 @@ public class Jeton {
     }
 
     public void setBroke(boolean broke) {
-        if (broke == false) {
-            loadTexture = false;
-        }
+        loadTexture = false;
         this.broke = broke;
     }
 
     Jeton broke() {
-        loadTexture = false;
+        canbreak = false;
         select = false;
         broke = true;
         image = 0;
-        type = 'V';
         return this;
+    }
+
+    public boolean isLoadTexture() {
+        return loadTexture;
+    }
+
+    public void setLoadTexture(boolean loadTexture) {
+        this.loadTexture = loadTexture;
     }
 
     Jeton setCanBreak(boolean canbreak) {
         this.canbreak = canbreak;
-
+        if (!canbreak) {
+            rotate = 0;
+        }
         return this;
     }
 
