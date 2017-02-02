@@ -58,6 +58,7 @@ public class Render implements GLSurfaceView.Renderer {
         //Really Nice Perspective Calculations
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
 
+
     }
 
     /**
@@ -74,6 +75,11 @@ public class Render implements GLSurfaceView.Renderer {
                     //gl.glTranslatef(-0.49f,0.83f, -2.0f);
                     //Move down 1.0 Unit And Into The Screen 6.0
                     //gl.glRotatef(rquad, 0.0f, 0.0f, 1.0f);    //Rotate The Square On The X axis ( NEW )
+                    if (lvl.getGrille().getSelect()[0] != -1) {
+                        if (lvl.getGrille().GameOneCanBreak(l, c)) {
+                            lvl.getGrille().getJeton()[l][c].setCanBreak(true);
+                        }
+                    }
                     lvl.getGrille().getJeton()[l][c].draw(gl, tLigne, tCase);
                     gl.glLoadIdentity();
                 }
@@ -99,8 +105,8 @@ public class Render implements GLSurfaceView.Renderer {
             tCase = 1f / (lvl.getGrille().getLc()[0] + 1);
             tLigne = tCase / (lvl.getGrille().getLc()[0] + 1);
         }
-        tCase = (float) ((int) (tCase * 1000f)) / 1000f;
-        tLigne = (float) ((int) (tLigne * 1000f)) / 1000f;
+        tCase = (Math.round((int) (tCase * 100f)) - 0.5f) / 100f;
+        tLigne = (float) (Math.round((int) (tLigne * 100f) - 0.5f)) / 100f;
         for (int l = 0; l < lvl.getGrille().getLc()[0]; l++) {
             for (int c = 0; c < lvl.getGrille().getLc()[1]; c++) {
                 float vertices[] = {

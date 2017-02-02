@@ -1,10 +1,6 @@
 package fr.albanninou.frogone;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.opengl.GLUtils;
 
 import java.nio.ByteBuffer;
@@ -54,6 +50,7 @@ public class Jeton {
     private int rotation = 0;
     private Grille grille;
     private int ligne, colonne;
+    private boolean loadTexture = false;
 
     Jeton(char type, int ligne, int colonne, Grille grille) {
         this.type = type;
@@ -86,101 +83,34 @@ public class Jeton {
         vertexBuffer.position(0);
     }
 
+    public void setImage(int image) {
+        this.image = image;
+    }
+
     public void draw(GL10 gl, float tLigne, float tCase) {
-        gl.glTranslatef(-0.495f + tLigne * (colonne + 1) + tCase * colonne + tCase * 0.5f, 0.85f - tLigne * (ligne + 1) - tCase * ligne - tCase * 0.5f, -2.1f);
+        if (!loadTexture && type != 'V') {
+            loadGLTexture(gl);
+            loadTexture = true;
+        }
+        if (type == 'V' && !select) {
+            return;
+        }
+
+        gl.glTranslatef(-0.52f + tLigne * (colonne + 1) + tCase * colonne + tCase * 0.5f, 0.85f - tLigne * (ligne + 1) - tCase * ligne - tCase * 0.5f, -2f);
         gl.glRotatef(180, 0.0f, 0.0f, 1.0f);
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
 
-        // Point to our buffers
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-
-        // Set the face rotation
-        gl.glFrontFace(GL10.GL_CW);
-
-
-        gl.glEnable(GL10.GL_BLEND);
-        gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
-
-        // Point to our vertex buffer
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
-
-        // Draw the vertices as triangle strip
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
-
-        //Disable the client state before leaving
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-
-    }
-
-    public void loadGLTexture(GL10 gl) {
-        // loading texture
-
-        // generate one texture pointer
-        gl.glGenTextures(1, textures, 0);
-        // ...and bind it to our array
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
-
-        // create nearest filtered texture
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-
-        if (type == 'A') {
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getA(), 0);
-        }
-        if (type == 'B') {
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getB(), 0);
-        }
-        if (type == 'C') {
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getC(), 0);
-        }
-        if (type == 'D') {
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getD(), 0);
-        }
-        if (type == 'E') {
-            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getE(), 0);
-        }
-
-    }
-
-    public char getType() {
-        return type;
-    }
-
-    public boolean getBroke() {
-        return broke;
-    }
-
-    Jeton drawJeton(Canvas canvas, RectF rect) {
-
-        if (type == 'A') {
-            bmp = grille.getA();
-        }
-        if (type == 'B') {
-            bmp = grille.getB();
-        }
-        if (type == 'C') {
-            bmp = grille.getC();
-        }
-        if (type == 'D') {
-            bmp = grille.getD();
-        }
-        if (type == 'E') {
-            bmp = grille.getE();
-        }
         if (broke) {
             image = image + 2;
-            if (image < rect.height() / 2) {
-                if (grille.getImage().getRotate(type2, image) != null) {
-                    canvas.drawBitmap(grille.getImage().getRotate(type2, image), rect.left + image, rect.top + image, null);
-                }
+            if (image / tCase < tCase / 2) {
+                gl.glRotatef(image, 0.0f, 0.0f, 1.0f);
+                gl.glScalef(0.5f, 1.0f, 2.0f);
+                //canvas.drawBitmap(grille.getImage().getRotate(type2, image), rect.left + image, rect.top + image, null);
+
             } else {
                 broke = false;
                 image = 0;
             }
-        } else {
+        } /*else {
             if (type != 'V') {
                 if (select || image != 0) {
                     if (select) {
@@ -230,9 +160,80 @@ public class Jeton {
                     image = 0;
                 }
             }
+        }*/
+
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+
+        // Point to our buffers
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+
+        // Set the face rotation
+        gl.glFrontFace(GL10.GL_CW);
+
+
+        gl.glEnable(GL10.GL_BLEND);
+        gl.glBlendFunc(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+
+        // Point to our vertex buffer
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+
+        // Draw the vertices as triangle strip
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
+
+        //Disable the client state before leaving
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+
+    }
+
+    public void loadGLTexture(GL10 gl) {
+        // loading texture
+        // generate one texture pointer
+        gl.glGenTextures(1, textures, 0);
+        // ...and bind it to our array
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+
+        // create nearest filtered texture
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+
+        if (type == 'A') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getA(), 0);
         }
-        isdraw = true;
-        return this;
+        if (type == 'B') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getB(), 0);
+        }
+        if (type == 'C') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getC(), 0);
+        }
+        if (type == 'D') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getD(), 0);
+        }
+        if (type == 'E') {
+            GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, grille.getE(), 0);
+        }
+
+    }
+
+    public char getType() {
+        return type;
+    }
+
+    public void setType(char type) {
+        this.type = type;
+    }
+
+    public boolean getBroke() {
+        return broke;
+    }
+
+    public void setBroke(boolean broke) {
+        if (broke == false) {
+            loadTexture = false;
+        }
+        this.broke = broke;
     }
 
     Jeton setSelect(boolean select) {

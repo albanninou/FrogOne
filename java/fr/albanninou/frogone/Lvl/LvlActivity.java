@@ -16,6 +16,7 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import fr.albanninou.frogone.GLSurface;
 import fr.albanninou.frogone.Main.MainActivity;
 import fr.albanninou.frogone.R;
 import fr.albanninou.frogone.Render;
@@ -57,13 +58,14 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         layout.removeView(win);
         layout.removeView(coups);
         layout.removeView(textlvl);
-        //layout.addView(Lvl);
+
         layout.addView(coups);
         //Create an Instance with this Activity
-        glSurface = new GLSurfaceView(this);
+        glSurface = new GLSurface(this);
         //Set our own Renderer
         glSurface.setRenderer(new Render(Lvl));
         layout.addView(glSurface);
+        layout.addView(Lvl);
 
         final Button b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {

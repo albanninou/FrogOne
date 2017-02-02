@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.preference.PreferenceManager;
 import android.view.SurfaceHolder;
 
@@ -69,23 +68,9 @@ public class Grille {
         this.win = win;
     }
 
-    public void drawJeton(Canvas canvas) {
-        for (int l = 0; l < lc[0]; l++) {
-            for (int c = 0; c < lc[1]; c++) {
-                RectF rect = new RectF(8 + tLigne * (c + 1) + tCase * c, 8 + tLigne * (l + 1) + tCase * l, tLigne * (c + 1) + tCase * (c + 1) - 8, tLigne * (l + 1) + tCase * (l + 1) - 8);
-                jeton[l][c].setCanBreak(false);
-                if (select[0] != -1) {
-                    if (GameOneCanBreak(l, c)) {
-                        jeton[l][c].setCanBreak(true);
-                    }
-                }
-                jeton[l][c].drawJeton(canvas, rect);
-
-            }
-        }
-
+    public int[] getSelect() {
+        return select;
     }
-
     public boolean getFinish() {
         return finish;
     }
@@ -140,13 +125,18 @@ public class Grille {
 
     public void undow() {
         if (coup > 0) {
-            for (int l = 0; l < lc[0]; l++) {
-                for (int c = 0; c < lc[1]; c++) {
-                    jeton[l][c] = new Jeton(grille[coup - 1][l][c], l, c, this);
-                }
-            }
             select[0] = -1;
             coup--;
+            for (int l = 0; l < lc[0]; l++) {
+                for (int c = 0; c < lc[1]; c++) {
+                    jeton[l][c].setType(grille[coup][l][c]);
+                    jeton[l][c].setImage(0);
+                    jeton[l][c].setCanBreak(false);
+                    jeton[l][c].setBroke(false);
+                    jeton[l][c].setSelect(false);
+                }
+            }
+
         }
     }
 
@@ -222,7 +212,7 @@ public class Grille {
         return this.lc;
     }
 
-    boolean GameOneCanBreak(int l, int c) {
+    public boolean GameOneCanBreak(int l, int c) {
         int selectL = select[0], selectC = select[1], coups;
         coups = coup;
         boolean cassez = false;
@@ -471,11 +461,11 @@ public class Grille {
         }
         if (Bcassez) {
             select[0] = -1;
-            grille[coup][cassezL][cassezC] = 'V';
-            Jeton temp = jeton[cassezL][cassezC];
-            jeton[cassezL][cassezC] = jeton[selectL][selectC];
-            jeton[selectL][selectC] = temp;
+            jeton[cassezL][cassezC].setType(grille[coup - 1][selectL][selectL]);
+            jeton[selectL][selectC].setType('V');
+            jeton[selectL][selectC].setSelect(false);
             jeton[cassezL][cassezC].broke();
+            grille[coup][cassezL][cassezC] = 'V';
             if (LvlActivity.coups != null) {
                 LvlActivity.coups.setText("Coup(s) : " + coup);
                 LvlActivity.layout.removeView(LvlActivity.coups);
