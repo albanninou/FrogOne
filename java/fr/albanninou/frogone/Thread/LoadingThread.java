@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
 import fr.albanninou.frogone.Grille;
+import fr.albanninou.frogone.Lvl.LvlActivity;
 import fr.albanninou.frogone.Main.MainActivity;
 
 /**
@@ -70,7 +71,9 @@ public class LoadingThread extends Thread {
                 return;
             }
         }
-
+        if (LvlActivity.layout != null) {
+            LvlActivity.mHandler.sendEmptyMessage(0);
+        }
 
     }
 

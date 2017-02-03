@@ -109,16 +109,17 @@ public class Render implements GLSurfaceView.Renderer {
      */
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (grille.getLc()[0] < grille.getLc()[1]) {
-            tCase = 3f / (grille.getLc()[1] + 1);
+            tCase = 1.455f / (grille.getLc()[1] + 1);
             tLigne = tCase / (grille.getLc()[1] + 1);
         } else {
-            tCase = 3f / (grille.getLc()[0] + 1);
+            tCase = 1.455f / (grille.getLc()[0] + 1);
             tLigne = tCase / (grille.getLc()[0] + 1);
         }
-        tCase = (Math.round((int) (tCase * 100f)) - 0.5f) / 100f;
-        tLigne = (float) (Math.round((int) (tLigne * 100f) - 0.5f)) / 100f;
+        //tCase = (Math.round((int) (tCase * 100f)) - 0.5f) / 100f;
+        //tLigne = (float) (Math.round((int) (tLigne * 100f) - 0.5f)) / 100f;
         for (int l = 0; l < grille.getLc()[0]; l++) {
             for (int c = 0; c < grille.getLc()[1]; c++) {
+
                 float vertices[] = {
                         -tCase / 2f, -tCase / 2f, 0.0f,    //Bottom Left
                         tCase / 2f, -tCase / 2f, 0.0f,        //Bottom Right

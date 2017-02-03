@@ -47,6 +47,7 @@ public class Jeton {
     private int ligne, colonne;
     private boolean loadTexture = false;
     private float rotate = 0;
+    private int[] lc;
 
     Jeton(char type, int ligne, int colonne, Grille grille) {
         this.type = type;
@@ -108,8 +109,7 @@ public class Jeton {
         if (type2 == 'V' && !canbreak) {
             return;
         }
-
-        gl.glTranslatef(-1.48f + tLigne * (colonne + 1) + tCase * colonne + tCase * 0.5f, 2.53f - tLigne * (ligne + 1) - tCase * ligne - tCase * 0.5f, -6.10f);
+        gl.glTranslatef(-0.73f + tLigne * (colonne + 1) + tCase * colonne + tCase * 0.5f, 1.245f - tLigne * (ligne + 1) - tCase * ligne - tCase * 0.5f, -3);
         gl.glRotatef(180, 0.0f, 0.0f, 1.0f);
 
         if (broke) {
@@ -225,6 +225,7 @@ public class Jeton {
     }
 
     public void setType(char type) {
+        loadTexture = false;
         this.type = type;
         this.type2 = type;
     }

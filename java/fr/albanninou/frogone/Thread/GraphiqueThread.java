@@ -37,7 +37,7 @@ public class GraphiqueThread extends Thread {
             startTime = System.currentTimeMillis();
             if (!grille.getFinish()) {
                 try {
-                    canvas = holder.lockCanvas(null);
+                    canvas = holder.lockCanvas();
                     synchronized (holder) {
                         if (canvas != null) {
                             float taille = canvas.getWidth();

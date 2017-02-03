@@ -4,4 +4,8 @@
     <string name="step2">Click on a frog to select her, and click where you want to put her, you can move her from multiple cell. But there is rules. You can move her only if it form at least 3 frogs, and you cant jump over other frogs.</string>
     <string name="step3">A Black circle appear to show you where you can move the selected frog, select an other frog if none appear.</string>
     <string name="step4">Well played, you finished the level, click to continue</string>
+    <string name="newVersion">A new version is avaible download it ?</string>
+    <string name="news">New version</string>
+    <string name="oui">Yes</string>
+    <string name="non">No</string>
 </resources>

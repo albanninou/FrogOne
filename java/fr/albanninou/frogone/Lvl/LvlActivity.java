@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -33,8 +35,18 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
     public static Resources res;
     public static Activity act;
     public static RelativeLayout layout;
+    public static TextView textlvl;
     public static TextView win;
     public static TextView coups;
+    public static Button b1, b2;
+    public static Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            LvlActivity.layout.addView(LvlActivity.textlvl);
+            LvlActivity.layout.addView(LvlActivity.coups);
+            LvlActivity.layout.addView(LvlActivity.b1);
+            LvlActivity.layout.addView(LvlActivity.b2);
+        }
+    };
     private GLSurfaceView glSurface;
 
     @Override
@@ -47,7 +59,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         //Toast.makeText(this, "Vous avez recommncé" , Toast.LENGTH_SHORT).show();
         Intent intent = getIntent();
         lvl = intent.getIntExtra("lvl", 0);
-        TextView textlvl = (TextView) findViewById(R.id.textlvl);
+        textlvl = (TextView) findViewById(R.id.textlvl);
         textlvl.setText("Lvl " + lvl);
         layout = (RelativeLayout) findViewById(R.id.activity_lvl);
         res = getResources();
@@ -66,7 +78,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         glSurface.setRenderer(new Render(Lvl.getGrille()));
 
 
-        final Button b1 = (Button) findViewById(R.id.recommencez);
+        b1 = (Button) findViewById(R.id.recommencez);
         b1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!Lvl.getGrille().getWinBoolean()) {
@@ -77,7 +89,7 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
                 }
             }
         });
-        final Button b2 = (Button) findViewById(R.id.annuler);
+        b2 = (Button) findViewById(R.id.annuler);
         b2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!Lvl.getGrille().getWinBoolean()) {
@@ -92,11 +104,6 @@ public class LvlActivity extends Activity implements View.OnTouchListener {
         layout.removeView(b2);
         layout.addView(glSurface);
         layout.addView(Lvl);
-        layout.addView(textlvl);
-        layout.addView(coups);
-        layout.addView(b1);
-        layout.addView(b2);
-
     }
 
     @Override

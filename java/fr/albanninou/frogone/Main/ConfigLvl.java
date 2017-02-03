@@ -3,7 +3,7 @@ package fr.albanninou.frogone.Main;
 
 public class ConfigLvl {
 
-    public static int lvlmax = 17;
+    public static int lvlmax = 18;
 
     public static char[][] getGrille(int lvl) {
         char[][][] map = new char[100][100][100];
@@ -132,6 +132,16 @@ public class ConfigLvl {
                 {'B', 'A', 'C', 'B', 'A', 'A', 'E', 'A'},
                 {'B', 'A', 'C', 'B', 'D', 'D', 'E', 'B'}};
 
+        map[18] = new char[][]{
+                {'V', 'A', 'V', 'B', 'B', 'A', 'V', 'D'},
+                {'C', 'A', 'B', 'C', 'B', 'C', 'C', 'E'},
+                {'C', 'E', 'C', 'V', 'V', 'A', 'C', 'D'},
+                {'E', 'V', 'D', 'B', 'C', 'V', 'B', 'D'},
+                {'B', 'B', 'D', 'C', 'B', 'E', 'A', 'B'},
+                {'V', 'E', 'E', 'V', 'V', 'A', 'D', 'A'},
+                {'E', 'B', 'D', 'B', 'C', 'A', 'E', 'D'},
+                {'C', 'A', 'D', 'V', 'D', 'D', 'E', 'D'}};
+
 
         return map[lvl];
     }
@@ -174,6 +184,8 @@ public class ConfigLvl {
         lc[16] = new int[]{8, 8};
 
         lc[17] = new int[]{8, 8};
+
+        lc[18] = new int[]{8, 8};
 
 
         return lc[lvl];
